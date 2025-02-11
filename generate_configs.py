@@ -48,9 +48,9 @@ scorex {
 }"""
 
 def generate_api_key():
-    """Generate a random API key and its hash."""
-    api_key = ''.join(random.choices('0123456789abcdef', k=64))
-    api_hash = hashlib.sha256(api_key.encode()).hexdigest()
+    """Generate API key and its hash. Uses 'hello' as the default key."""
+    api_key = "hello"
+    api_hash = hashlib.blake2b(api_key.encode(), digest_size=32).hexdigest()
     return api_key, api_hash
 
 def create_config_directory():

@@ -52,59 +52,74 @@ The nodes will be accessible at the following ports:
 
 ## API Access
 
-Each node has its own API key located in the `config` directory:
+By default, all nodes are configured with the API key "hello". Each node's API key is stored in the `config` directory:
 - Node 1: `config/ergo-1.api.key`
 - Node 2: `config/ergo-2.api.key`
 etc.
 
-Example API call:
+Example API call using the default key:
 ```bash
-# Get the API key
+curl -H "api_key: hello" http://localhost:9500/info
+```
+
+The default API key hash for "hello" is:
+```
+324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf
+```
+
+### Changing API Keys
+
+You can change the API key for any node using the provided utility script:
+
+```bash
+# Generate a random API key for node 1
+python3 change_node_key.py --node 1
+
+# Set a specific API key for node 2
+python3 change_node_key.py --node 2 --key "your-custom-key"
+```
+
+The script will:
+1. Update the API key file
+2. Update the node's configuration with the correct hash
+3. Automatically restart the node to apply the changes
+
+After changing a key, you can access the node using the new key:
+```bash
+# Get the new API key
 API_KEY=$(cat config/ergo-1.api.key)
 
-# Make a request to node 1
+# Make a request with the new key
 curl -H "api_key: $API_KEY" http://localhost:9500/info
 ```
 
-## Managing API Keys
+### Managing API Keys
 
-### Generate a New API Key
-You can generate a new API key and its corresponding hash using the included utility:
+You can also use the API key utility script to generate new keys or compute hashes:
 
 ```bash
 # Generate a random API key
 python3 generate_api_key.py
 
-# Use a specific API key
+# Generate hash for a specific key
 python3 generate_api_key.py --key "your-custom-key"
 ```
 
-### Update a Node's API Key
-To update a specific node's API key:
+The utility will output:
+1. The API key
+2. The Blake2b hash (32-byte digest)
+3. The configuration line for ergo.conf
 
-1. Generate a new key and hash:
-```bash
-python3 generate_api_key.py > new_key.txt
+Example output:
 ```
+API Key Details:
+--------------------------------------------------
+API Key: your-custom-key
+Hash:    324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf
+--------------------------------------------------
 
-2. Update the node's configuration:
-```bash
-# Get the new API key
-NEW_KEY=$(head -n 3 new_key.txt | tail -n 1 | cut -d' ' -f3)
-
-# Get the hash
-NEW_HASH=$(grep "apiKeyHash" new_key.txt | cut -d'"' -f2)
-
-# Update the API key file
-echo $NEW_KEY > config/ergo-1.api.key  # Replace 1 with your node number
-
-# Update the configuration file
-sed -i "s/apiKeyHash = .*/apiKeyHash = \"$NEW_HASH\"/" config/ergo-1.conf
-```
-
-3. Restart the specific node:
-```bash
-docker-compose -f docker-compose-multi.yml restart ergo-node-1
+To use this in your ergo.conf:
+apiKeyHash = "324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf"
 ```
 
 ## Directory Structure

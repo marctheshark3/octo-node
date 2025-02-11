@@ -23,7 +23,7 @@ A tool for easily setting up and managing multiple Ergo nodes in a containerized
 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/octo-node.git
-cd octo-node/ergo-node
+cd octo-node
 ```
 
 2. Generate setup for N nodes (example for 6 nodes):
@@ -68,7 +68,7 @@ curl -H "api_key: $API_KEY" http://localhost:9100/info
 ## Directory Structure
 
 ```
-ergo-node/
+.
 ├── config/                 # Node configurations and API keys
 ├── .ergo-*/               # Node data directories
 ├── generate_configs.py     # Configuration generator

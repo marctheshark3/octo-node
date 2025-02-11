@@ -1,9 +1,9 @@
 # Ergo Node specific
-ergo-node/.ergo*/
-ergo-node/config/*.api.key
-ergo-node/config/*.conf
-ergo-node/*.jar
-ergo-node/logs/
+.ergo*/
+config/*.api.key
+config/*.conf
+*.jar
+logs/
 
 # IDE specific files
 .idea/

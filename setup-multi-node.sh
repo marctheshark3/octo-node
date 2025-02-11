@@ -22,12 +22,12 @@ docker-compose -f docker-compose-multi.yml up -d
 
 echo "All Ergo nodes have been started!"
 echo "Access the nodes at:"
-echo "Node 1: http://localhost:9100"
-echo "Node 2: http://localhost:9101"
-echo "Node 3: http://localhost:9102"
-echo "Node 4: http://localhost:9103"
-echo "Node 5: http://localhost:9104"
-echo "Node 6: http://localhost:9105"
+echo "Node 1: http://localhost:9500"
+echo "Node 2: http://localhost:9501"
+echo "Node 3: http://localhost:9502"
+echo "Node 4: http://localhost:9503"
+echo "Node 5: http://localhost:9504"
+echo "Node 6: http://localhost:9505"
 
 echo ""
 echo "API keys can be found in the config directory:"

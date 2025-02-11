@@ -10,6 +10,7 @@ A tool for easily setting up and managing multiple Ergo nodes in a containerized
 - Isolated storage for each node
 - Configurable ports for API and P2P networking
 - Easy setup and management scripts
+- API key management utilities
 
 ## Prerequisites
 
@@ -42,12 +43,12 @@ The nodes will be accessible at the following ports:
 
 | Node Number | API Port | P2P Port |
 |------------|----------|----------|
-| Node 1     | 9100     | 9200     |
-| Node 2     | 9101     | 9201     |
-| Node 3     | 9102     | 9202     |
-| Node 4     | 9103     | 9203     |
-| Node 5     | 9104     | 9204     |
-| Node 6     | 9105     | 9205     |
+| Node 1     | 9500     | 9600     |
+| Node 2     | 9501     | 9601     |
+| Node 3     | 9502     | 9602     |
+| Node 4     | 9503     | 9603     |
+| Node 5     | 9504     | 9604     |
+| Node 6     | 9505     | 9605     |
 
 ## API Access
 
@@ -62,7 +63,48 @@ Example API call:
 API_KEY=$(cat config/ergo-1.api.key)
 
 # Make a request to node 1
-curl -H "api_key: $API_KEY" http://localhost:9100/info
+curl -H "api_key: $API_KEY" http://localhost:9500/info
+```
+
+## Managing API Keys
+
+### Generate a New API Key
+You can generate a new API key and its corresponding hash using the included utility:
+
+```bash
+# Generate a random API key
+python3 generate_api_key.py
+
+# Use a specific API key
+python3 generate_api_key.py --key "your-custom-key"
+```
+
+### Update a Node's API Key
+To update a specific node's API key:
+
+1. Generate a new key and hash:
+```bash
+python3 generate_api_key.py > new_key.txt
+```
+
+2. Update the node's configuration:
+```bash
+# Get the new API key
+NEW_KEY=$(head -n 3 new_key.txt | tail -n 1 | cut -d' ' -f3)
+
+# Get the hash
+NEW_HASH=$(grep "apiKeyHash" new_key.txt | cut -d'"' -f2)
+
+# Update the API key file
+echo $NEW_KEY > config/ergo-1.api.key  # Replace 1 with your node number
+
+# Update the configuration file
+sed -i "s/apiKeyHash = .*/apiKeyHash = \"$NEW_HASH\"/" config/ergo-1.conf
+```
+
+3. Restart the specific node:
+```bash
+docker-compose -f docker-compose-multi.yml restart ergo-node-1
 ```
 
 ## Directory Structure
@@ -72,6 +114,7 @@ curl -H "api_key: $API_KEY" http://localhost:9100/info
 ├── config/                 # Node configurations and API keys
 ├── .ergo-*/               # Node data directories
 ├── generate_configs.py     # Configuration generator
+├── generate_api_key.py    # API key utility
 ├── generate_node_setup.py # Main setup generator
 ├── setup-multi-node.sh    # Setup script
 └── docker-compose-multi.yml # Docker compose configuration
@@ -102,12 +145,19 @@ View logs:
 docker-compose -f docker-compose-multi.yml logs -f
 ```
 
+Start/stop/restart a specific node:
+```bash
+# Replace N with node number (1-6)
+docker-compose -f docker-compose-multi.yml restart ergo-node-N
+```
+
 ## Security Notes
 
 - API keys are automatically generated and stored in the `config` directory
 - Each node runs in its own container with isolated storage
 - Configuration files and API keys are git-ignored by default
 - Make sure to secure your API endpoints if exposing to the internet
+- Use strong API keys in production environments
 
 ## Contributing
 

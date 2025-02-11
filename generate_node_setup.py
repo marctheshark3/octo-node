@@ -17,8 +17,8 @@ services:
       - ./config/ergo-1.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "9100:9053"
-      - "9200:9030"
+      - "9500:9053"
+      - "9600:9030"
     working_dir: /app
     command: java -jar -Xmx2G ergo.jar --mainnet -c ergo.conf
 """
@@ -33,8 +33,8 @@ services:
       - ./config/ergo-{i}.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "{9100 + i - 1}:9053"
-      - "{9200 + i - 1}:9030"
+      - "{9500 + i - 1}:9053"
+      - "{9600 + i - 1}:9030"
 """
         template += node_config
     
@@ -71,7 +71,7 @@ echo "Access the nodes at:"
     
     # Add node access information
     for i in range(1, num_nodes + 1):
-        script += f'echo "Node {i}: http://localhost:{9100 + i - 1}"\n'
+        script += f'echo "Node {i}: http://localhost:{9500 + i - 1}"\n'
     
     script += """
 echo ""

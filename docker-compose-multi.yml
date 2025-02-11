@@ -8,8 +8,8 @@ services:
       - ./config/ergo-1.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "9100:9053"
-      - "9200:9030"
+      - "9500:9053"
+      - "9600:9030"
     working_dir: /app
     command: java -jar -Xmx2G ergo.jar --mainnet -c ergo.conf
 
@@ -20,8 +20,8 @@ services:
       - ./config/ergo-2.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "9101:9053"
-      - "9201:9030"
+      - "9501:9053"
+      - "9601:9030"
 
   ergo-node-3:
     <<: *ergo-node-template
@@ -30,8 +30,8 @@ services:
       - ./config/ergo-3.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "9102:9053"
-      - "9202:9030"
+      - "9502:9053"
+      - "9602:9030"
 
   ergo-node-4:
     <<: *ergo-node-template
@@ -40,8 +40,8 @@ services:
       - ./config/ergo-4.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "9103:9053"
-      - "9203:9030"
+      - "9503:9053"
+      - "9603:9030"
 
   ergo-node-5:
     <<: *ergo-node-template
@@ -50,8 +50,8 @@ services:
       - ./config/ergo-5.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "9104:9053"
-      - "9204:9030"
+      - "9504:9053"
+      - "9604:9030"
 
   ergo-node-6:
     <<: *ergo-node-template
@@ -60,5 +60,5 @@ services:
       - ./config/ergo-6.conf:/app/ergo.conf
       - ./ergo-5.0.14.jar:/app/ergo.jar
     ports:
-      - "9105:9053"
-      - "9205:9030"
+      - "9505:9053"
+      - "9605:9030"

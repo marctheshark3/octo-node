@@ -1,66 +1,122 @@
-# Ergo Synced Node
+# Octo-Node: Multi-Node Ergo Network Setup
 
-[Direct Blockchain Archive Download Link](https://storage.googleapis.com/ergo_bucket_archive/ergo-full-node-data.7z)
+A tool for easily setting up and managing multiple Ergo nodes in a containerized environment. This project allows you to spin up any number of Ergo nodes, each with its own configuration and API endpoint.
 
-Running a node from initial sync can take a long time, espically on older or low power devices. 
+## Features
 
- To mitigate this problem I have taken the liberty to take a snapshot of about 1,054,000 blocks. \
- This will drastically reduce sync time.
+- Dynamic node generation (specify any number of nodes)
+- Containerized setup using Docker
+- Automatic API key generation for each node
+- Isolated storage for each node
+- Configurable ports for API and P2P networking
+- Easy setup and management scripts
 
- This program is neatly organized into a docker container to spin up a complete node in around 30 min.
 ## Prerequisites
 
-Although the script tries to install docker for any linux distro, its best of docker and the docker compose plug-in are already installed.
+- Docker
+- Docker Compose
+- Python 3.x
+- Bash shell
 
-The node currently takes about 25 GiBs of storage. It is best for your host system of have a minimum 50 GiBs free and 6 GiBs of RAM available. 
+## Quick Start
 
-RAM may be able to be customized if you edit the `-Xmx6G` flag in `docker-compose.yml`
-## Setup
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/octo-node.git
+cd octo-node/ergo-node
+```
 
-Defaults:
+2. Generate setup for N nodes (example for 6 nodes):
+```bash
+python3 generate_node_setup.py 6
 ```
-localhost:9053 --This is the web address to the ergo node
-API Key: hello --This is the api key to unlock the ergo node in the web panel
-```
-Change the hash in [ergo.conf](ergo-node/ergo.conf) and [python-conf/ergo.conf](ergo-node/python-conf/ergo.conf) to change the API Key
-### ergo-node setup
-```
-git clone https://github.com/mgpai22/ergo-synced-node
-```
-```
-cd ergo-synced-node/ergo-node
-```
-```
-chmod +x ergo-node-installer.sh
-```
-```
-./ergo-node-installer.sh
-```
-```
-nano ergo.conf
-```
-- Edit the config file as necessary
-  - Defaults are fine
-  - Make sure to save the file in nano with `ctrl + o ` then exit with `ctrl + x`
-  - After editing do this `docker compose up --force-recreate -d` to make sure the changes load
-  - Warning, if run before the installer script, as ergo.conf will be overwritten
-## Usage
 
-The setup process should take under 30 min. This is depending on the download and extraction \
-speed. The extraction process itself takes around 10 to 15 minutes.
+3. Start the nodes:
+```bash
+./setup-multi-node.sh
+```
 
-`localhost:9053` will open up the webpage directly to the node.
+## Default Port Configuration
 
-Once setup is complete, the docker container can be left alone. The node can be used as any other node.
+The nodes will be accessible at the following ports:
 
-The config file can be edited while the node is running
-- Edit as normal and save
-- `docker-compose up --force-recreate -d`
+| Node Number | API Port | P2P Port |
+|------------|----------|----------|
+| Node 1     | 9100     | 9200     |
+| Node 2     | 9101     | 9201     |
+| Node 3     | 9102     | 9202     |
+| Node 4     | 9103     | 9203     |
+| Node 5     | 9104     | 9204     |
+| Node 6     | 9105     | 9205     |
 
-The node will connect only to peers that are synced and healthy. To refresh this peer list run `./updatePeerList.sh` in the respective directory.  Then enter `docker-compose up --force-recreate -d` to start up the node.
+## API Access
 
-The node instance can be removed with `docker-compose down` this will NOT delete the blockchain \
-files.
+Each node has its own API key located in the `config` directory:
+- Node 1: `config/ergo-1.api.key`
+- Node 2: `config/ergo-2.api.key`
+etc.
 
-## Roadmap
-- Windows Guide
+Example API call:
+```bash
+# Get the API key
+API_KEY=$(cat config/ergo-1.api.key)
+
+# Make a request to node 1
+curl -H "api_key: $API_KEY" http://localhost:9100/info
+```
+
+## Directory Structure
+
+```
+ergo-node/
+├── config/                 # Node configurations and API keys
+├── .ergo-*/               # Node data directories
+├── generate_configs.py     # Configuration generator
+├── generate_node_setup.py # Main setup generator
+├── setup-multi-node.sh    # Setup script
+└── docker-compose-multi.yml # Docker compose configuration
+```
+
+## Configuration
+
+Each node gets its own:
+- Data directory (`.ergo-N/`)
+- Configuration file (`config/ergo-N.conf`)
+- API key (`config/ergo-N.api.key`)
+- Port mappings for API and P2P communication
+
+## Managing Nodes
+
+Start all nodes:
+```bash
+docker-compose -f docker-compose-multi.yml up -d
+```
+
+Stop all nodes:
+```bash
+docker-compose -f docker-compose-multi.yml down
+```
+
+View logs:
+```bash
+docker-compose -f docker-compose-multi.yml logs -f
+```
+
+## Security Notes
+
+- API keys are automatically generated and stored in the `config` directory
+- Each node runs in its own container with isolated storage
+- Configuration files and API keys are git-ignored by default
+- Make sure to secure your API endpoints if exposing to the internet
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
